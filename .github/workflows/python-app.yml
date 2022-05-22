@@ -40,11 +40,3 @@ jobs:
         pytest
       env:
         PYTHONPATH: /home/runner/work/HinteDI/
-      with:
-        fetch-depth: 0
-    - name: Build and Commit
-      uses: sphinx-notes/pages@v2
-    - name: Push to pages branch
-      uses: ad-m/github-push-action@master
-      with:
-        github
