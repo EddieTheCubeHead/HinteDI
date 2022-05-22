@@ -9,3 +9,5 @@
 /.build/
 /.idea/
 /test/.pytest_cache/
+/hintedi/__pycache__/
+/test/__pycache__/
