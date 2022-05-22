@@ -4,10 +4,11 @@
 /build/
 /.vscode/
 /.templates/
-/.static/
 /.pytest_cache/
-/.build/
 /.idea/
 /test/.pytest_cache/
 /hintedi/__pycache__/
 /test/__pycache__/
+/docs/.static/
+/docs/.build/
+
