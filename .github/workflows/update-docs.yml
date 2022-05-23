@@ -8,7 +8,7 @@ on:
     branches: [ master ]
 
 permissions:
-  contents: read
+  read-all
 
 jobs:
   build:
