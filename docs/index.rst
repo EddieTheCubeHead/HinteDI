@@ -21,10 +21,3 @@ Instance sentinel class
 
 .. autoclass:: hintedi.hinted_dependency_injector.InstanceSentinel
       :members:
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
