@@ -1,0 +1,200 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Welcome to HinteDI’s documentation! &#8212; HinteDI 0.2.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <link rel="canonical" href="https://eddiethecubehead.github.io/HinteDI/index.html" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="module-hintedi">
+<span id="welcome-to-hintedi-s-documentation"></span><h1>Welcome to HinteDI’s documentation!<a class="headerlink" href="#module-hintedi" title="Permalink to this headline">¶</a></h1>
+<p>HinteDI - a package for basic and easy dependency injection</p>
+<dl class="field-list simple">
+<dt class="field-odd">copyright</dt>
+<dd class="field-odd"><ol class="loweralpha simple" start="3">
+<li><p>2022-present Eetu Asikainen</p></li>
+</ol>
+</dd>
+<dt class="field-even">license</dt>
+<dd class="field-even"><p>MIT</p>
+</dd>
+</dl>
+<section id="the-hintedi-class">
+<h2>The HinteDI class<a class="headerlink" href="#the-hintedi-class" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="hintedi.hinted_dependency_injector.HinteDI">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">hintedi.hinted_dependency_injector.</span></span><span class="sig-name descname"><span class="pre">HinteDI</span></span><a class="headerlink" href="#hintedi.hinted_dependency_injector.HinteDI" title="Permalink to this definition">¶</a></dt>
+<dd><p>The dependency injector class.</p>
+<p>This class is meant to be used through the class method decorators
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">hintedi.HinteDI.singleton()</span></code>, <code class="xref py py-meth docutils literal notranslate"><span class="pre">hintedi.HinteDI.instance()</span></code> and <code class="xref py py-meth docutils literal notranslate"><span class="pre">hintedi.HinteDI.inject()</span></code>.
+This is provided as a class instead of as a collection of methods to enable subclassing. By subclassing this class
+you can have multiple independent injector implementations in your program.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables</dt>
+<dd class="field-odd"><p><strong>dependencies</strong> – A dict mapping dependency types into the dependency.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="hintedi.hinted_dependency_injector.HinteDI.inject">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">inject</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hintedi.hinted_dependency_injector.HinteDI.inject" title="Permalink to this definition">¶</a></dt>
+<dd><p>A class method meant to be used as a function decorator to mark the method as requiring injection. Only
+positional or positional + keyword arguments will be injected, keyword-only arguments will not be injected.
+Arguments already provided including default values will be ignored, as will all arguments named self or cls.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>func</strong> (<em>Callable</em>) – The function requiring dependency injection</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hintedi.hinted_dependency_injector.HinteDI.instance">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">instance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dependency_class</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">type</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hintedi.hinted_dependency_injector.HinteDI.instance" title="Permalink to this definition">¶</a></dt>
+<dd><p>A class method meant to be used as a class decorator to mark the class as an instance dependency (create a
+new instance for all injections).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>dependency_class</strong> (<em>type</em>) – The class to be decorated</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="hintedi.hinted_dependency_injector.HinteDI.singleton">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">singleton</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dependency_class</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">type</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hintedi.hinted_dependency_injector.HinteDI.singleton" title="Permalink to this definition">¶</a></dt>
+<dd><p>A class method meant to be used as a class decorator to mark the class as a singleton dependency (reuse the
+same instance for all injections).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>dependency_class</strong> (<em>type</em>) – The class to be decorated</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="exception-thrown-by-the-package">
+<h2>Exception thrown by the package<a class="headerlink" href="#exception-thrown-by-the-package" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="hintedi.hinted_dependency_injector.InjectionException">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">hintedi.hinted_dependency_injector.</span></span><span class="sig-name descname"><span class="pre">InjectionException</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hintedi.hinted_dependency_injector.InjectionException" title="Permalink to this definition">¶</a></dt>
+<dd><p>An exception thrown by dependency injector.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>message</strong> (<em>str</em>) – The error message</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="instance-sentinel-class">
+<h2>Instance sentinel class<a class="headerlink" href="#instance-sentinel-class" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="hintedi.hinted_dependency_injector.InstanceSentinel">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">hintedi.hinted_dependency_injector.</span></span><span class="sig-name descname"><span class="pre">InstanceSentinel</span></span><a class="headerlink" href="#hintedi.hinted_dependency_injector.InstanceSentinel" title="Permalink to this definition">¶</a></dt>
+<dd><p>A sentinel class used for differentiating instance dependencies from singleton dependencies in dependency dict.</p>
+<p>This is exposed to enable typechecking against this class.</p>
+</dd></dl>
+
+</section>
+</section>
+<section id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
+<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
+</ul>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="#">HinteDI</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="#">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2022, Eetu Asikainen.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.5.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/index.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
