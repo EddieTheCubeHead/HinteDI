@@ -18,7 +18,6 @@ setup(name="HinteDI",
       classifiers=[
           "Development Status :: 4 - Beta",
           "Intended Audience :: Developers",
-          "Programming language :: Python :: 3.10",
           "License :: OSI Approved :: MIT License",
           "Operating System :: OS Independent"
       ],
