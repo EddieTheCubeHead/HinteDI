@@ -52,9 +52,12 @@
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">hintedi.hinted_dependency_injector.</span></span><span class="sig-name descname"><span class="pre">HinteDI</span></span><a class="headerlink" href="#hintedi.hinted_dependency_injector.HinteDI" title="Permalink to this definition">¶</a></dt>
 <dd><p>The dependency injector class.</p>
 <p>This class is meant to be used through the class method decorators
-<code class="xref py py-meth docutils literal notranslate"><span class="pre">hintedi.HinteDI.singleton()</span></code>, <code class="xref py py-meth docutils literal notranslate"><span class="pre">hintedi.HinteDI.instance()</span></code> and <code class="xref py py-meth docutils literal notranslate"><span class="pre">hintedi.HinteDI.inject()</span></code>.
+<code class="docutils literal notranslate"><span class="pre">HinteDI.singleton</span></code>, <code class="docutils literal notranslate"><span class="pre">HinteDI.instance</span></code> and <code class="docutils literal notranslate"><span class="pre">HinteDI.inject</span></code>.
 This is provided as a class instead of as a collection of methods to enable subclassing. By subclassing this class
-you can have multiple independent injector implementations in your program.</p>
+you can have multiple independent injector implementations in your program. The class also exposes the dependencies
+dict that stores all registered dependencies. This can be manipulated for example for testing purposes. For
+instance dependencies, the dependency type is mapped into an ‘’InstanceSentinel’’ instance, for uninitialized
+singletons into ‘’None’’ and for initialized singletons, the singleton instance.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Variables</dt>
 <dd class="field-odd"><p><strong>dependencies</strong> – A dict mapping dependency types into the dependency.</p>
@@ -66,6 +69,29 @@ you can have multiple independent injector implementations in your program.</p>
 <dd><p>A class method meant to be used as a function decorator to mark the method as requiring injection. Only
 positional or positional + keyword arguments will be injected, keyword-only arguments will not be injected.
 Arguments already provided including default values will be ignored, as will all arguments named self or cls.</p>
+<p>Usage in an instance method:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">DependentClass</span><span class="p">:</span>
+
+    <span class="nd">@HinteDI</span><span class="o">.</span><span class="n">inject</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dependency</span><span class="p">:</span> <span class="n">Dependency</span><span class="p">)</span>  <span class="c1"># self is ignored automatically</span>
+        <span class="o">...</span>
+</pre></div>
+</div>
+<p>Usage in a class method:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">DependentClass</span><span class="p">:</span>
+
+    <span class="nd">@classmethod</span>  <span class="c1"># Ensure the classmethod decorator comes first</span>
+    <span class="nd">@HinteDI</span><span class="o">.</span><span class="n">inject</span>
+    <span class="k">def</span> <span class="nf">perform_class_method</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dependency</span><span class="p">:</span> <span class="n">Dependency</span><span class="p">)</span>  <span class="c1"># cls is ignored automatically</span>
+        <span class="o">...</span>
+</pre></div>
+</div>
+<p>Usage in a function:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@HinteDI</span><span class="o">.</span><span class="n">inject</span>
+<span class="k">def</span> <span class="nf">perform_function</span><span class="p">(</span><span class="n">dependency</span><span class="p">:</span> <span class="n">Dependency</span><span class="p">)</span>
+    <span class="o">...</span>
+</pre></div>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>func</strong> (<em>Callable</em>) – The function requiring dependency injection</p>
@@ -78,6 +104,12 @@ Arguments already provided including default values will be ignored, as will all
 <em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">instance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dependency_class</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">type</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hintedi.hinted_dependency_injector.HinteDI.instance" title="Permalink to this definition">¶</a></dt>
 <dd><p>A class method meant to be used as a class decorator to mark the class as an instance dependency (create a
 new instance for all injections).</p>
+<p>Usage:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@HinteDI</span><span class="o">.</span><span class="n">instance</span>
+<span class="k">class</span> <span class="nc">InstanceDependency</span><span class="p">:</span>
+    <span class="o">...</span>
+</pre></div>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>dependency_class</strong> (<em>type</em>) – The class to be decorated</p>
@@ -90,6 +122,12 @@ new instance for all injections).</p>
 <em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">singleton</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dependency_class</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">type</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hintedi.hinted_dependency_injector.HinteDI.singleton" title="Permalink to this definition">¶</a></dt>
 <dd><p>A class method meant to be used as a class decorator to mark the class as a singleton dependency (reuse the
 same instance for all injections).</p>
+<p>Usage:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@HinteDI</span><span class="o">.</span><span class="n">singleton</span>
+<span class="k">class</span> <span class="nc">SingletonDependency</span><span class="p">:</span>
+    <span class="o">...</span>
+</pre></div>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>dependency_class</strong> (<em>type</em>) – The class to be decorated</p>
@@ -106,6 +144,8 @@ same instance for all injections).</p>
 <dt class="sig sig-object py" id="hintedi.hinted_dependency_injector.InjectionException">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">hintedi.hinted_dependency_injector.</span></span><span class="sig-name descname"><span class="pre">InjectionException</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hintedi.hinted_dependency_injector.InjectionException" title="Permalink to this definition">¶</a></dt>
 <dd><p>An exception thrown by dependency injector.</p>
+<p>This is exposed to enable catching it explicitly if needed. It is not advisable to use this class to construct your
+own exceptions.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>message</strong> (<em>str</em>) – The error message</p>
@@ -124,14 +164,6 @@ same instance for all injections).</p>
 </dd></dl>
 
 </section>
-</section>
-<section id="indices-and-tables">
-<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
-<ul class="simple">
-<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
-<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
-<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
-</ul>
 </section>
 
 
