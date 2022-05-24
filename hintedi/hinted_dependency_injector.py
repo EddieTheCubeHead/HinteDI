@@ -24,6 +24,9 @@ class InstanceSentinel:
 class InjectionException(Exception):
     """An exception thrown by dependency injector.
 
+    This is exposed to enable catching it explicitly if needed. It is not advisable to use this class to construct your
+    own exceptions.
+
     :param message: The error message
     :type message: str
     """
@@ -39,9 +42,12 @@ class HinteDI:
     """The dependency injector class.
 
     This class is meant to be used through the class method decorators
-    :py:meth:`hintedi.HinteDI.singleton`, :py:meth:`hintedi.HinteDI.instance` and :py:meth:`hintedi.HinteDI.inject`.
+    ``HinteDI.singleton``, ``HinteDI.instance`` and ``HinteDI.inject``.
     This is provided as a class instead of as a collection of methods to enable subclassing. By subclassing this class
-    you can have multiple independent injector implementations in your program.
+    you can have multiple independent injector implementations in your program. The class also exposes the dependencies
+    dict that stores all registered dependencies. This can be manipulated for example for testing purposes. For
+    instance dependencies, the dependency type is mapped into an ''InstanceSentinel'' instance, for uninitialized
+    singletons into ''None'' and for initialized singletons, the singleton instance.
 
     :cvar dependencies: A dict mapping dependency types into the dependency.
     :type dependencies: dict[type, Any]
@@ -54,6 +60,12 @@ class HinteDI:
         """A class method meant to be used as a class decorator to mark the class as a singleton dependency (reuse the
         same instance for all injections).
 
+        Usage::
+
+            @HinteDI.singleton
+            class SingletonDependency:
+                ...
+
         :param dependency_class: The class to be decorated
         :type dependency_class: type
         """
@@ -64,6 +76,12 @@ class HinteDI:
     def instance(cls, dependency_class: type):
         """A class method meant to be used as a class decorator to mark the class as an instance dependency (create a
         new instance for all injections).
+
+        Usage::
+
+            @HinteDI.instance
+            class InstanceDependency:
+                ...
 
         :param dependency_class: The class to be decorated
         :type dependency_class: type
@@ -83,6 +101,29 @@ class HinteDI:
         """A class method meant to be used as a function decorator to mark the method as requiring injection. Only
         positional or positional + keyword arguments will be injected, keyword-only arguments will not be injected.
         Arguments already provided including default values will be ignored, as will all arguments named self or cls.
+
+        Usage in an instance method::
+
+            class DependentClass:
+
+                @HinteDI.inject
+                def __init__(self, dependency: Dependency)  # self is ignored automatically
+                    ...
+
+        Usage in a class method::
+
+            class DependentClass:
+
+                @classmethod  # Ensure the classmethod decorator comes first
+                @HinteDI.inject
+                def perform_class_method(cls, dependency: Dependency)  # cls is ignored automatically
+                    ...
+
+        Usage in a function::
+
+            @HinteDI.inject
+            def perform_function(dependency: Dependency)
+                ...
 
         :param func: The function requiring dependency injection
         :type func: Callable
