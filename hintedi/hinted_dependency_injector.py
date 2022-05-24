@@ -33,8 +33,8 @@ class InjectionException(Exception):
 
     def __init__(self, message: str):
         full_message = f"An error occurred during HinteDI dependency injection: {message}\n If you think this is a " \
-                       f"bug, please file a bug report in the HinteDI repository in GitHub according to the " \
-                       f"guidelines of a good bug report."
+                       f"bug, please file a bug report in the HinteDI repository issue tracker in GitHub " \
+                       f"(https://github.com/EddieTheCubeHead/HinteDI/issues) using the \"Bug report\" issue template."
         super().__init__(full_message)
 
 
