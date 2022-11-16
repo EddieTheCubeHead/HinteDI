@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-VERSION = "0.2.0"
+VERSION = "0.3.0"
 DESCRIPTION = "A simple dependency injector based on type hints"
 
 with open("README.md", "r", encoding="utf-8") as readme:

@@ -22,7 +22,7 @@ copyright = '2022, Eetu Asikainen'
 author = 'Eetu Asikainen'
 
 # The full version, including alpha/beta/rc tags
-release = '0.2.0'
+release = '0.3.0'
 
 
 # -- General configuration ---------------------------------------------------
