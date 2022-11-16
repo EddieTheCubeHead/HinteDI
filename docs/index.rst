@@ -10,6 +10,13 @@ The HinteDI class
 .. autoclass:: hintedi.hinted_dependency_injector.HinteDI
       :members:
 
+
+The instance factory class
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. autoclass:: hintedi.hinted_dependency_injector.InstanceFactory
+      :members:
+
 Exception thrown by the package
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
