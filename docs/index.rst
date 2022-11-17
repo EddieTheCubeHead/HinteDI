@@ -10,7 +10,6 @@ The HinteDI class
 .. autoclass:: hintedi.hinted_dependency_injector.HinteDI
       :members:
 
-
 The instance factory class
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 

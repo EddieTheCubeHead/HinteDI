@@ -170,7 +170,7 @@ class TestHinteDI:
 
         with pytest.raises(InjectionException) as actual_exception:
             DependentClass()
-            assert str(expected_exception) == str(actual_exception)
+        assert str(expected_exception) == str(actual_exception.value)
 
     def test_inject_given_dependency_with_no_annotation_then_error_raised_with_missing_annotation(self):
         class DependentClass:
@@ -183,7 +183,7 @@ class TestHinteDI:
 
         with pytest.raises(InjectionException) as actual_exception:
             DependentClass()
-            assert str(expected_exception) == str(actual_exception)
+        assert str(expected_exception) == str(actual_exception.value)
 
     @pytest.mark.parametrize("dependency_type", [HinteDI.singleton, HinteDI.instance, HinteDI.abstract_base])
     def test_singleton_given_dependency_of_same_type_then_error_raised_with_duplicate_dependency(self, dependency_type):
@@ -196,7 +196,7 @@ class TestHinteDI:
 
         with pytest.raises(InjectionException) as actual_exception:
             HinteDI.singleton(DuplicatedDependency)
-            assert str(expected_exception) == str(actual_exception)
+        assert str(expected_exception) == str(actual_exception.value)
 
     @pytest.mark.parametrize("dependency_type", [HinteDI.singleton, HinteDI.instance, HinteDI.abstract_base])
     def test_instance_given_dependency_of_same_type_then_error_raised_with_duplicate_dependency(self, dependency_type):
@@ -209,4 +209,4 @@ class TestHinteDI:
 
         with pytest.raises(InjectionException) as actual_exception:
             HinteDI.instance(DuplicatedDependency)
-            assert str(expected_exception) == str(actual_exception)
+        assert str(expected_exception) == str(actual_exception.value)
