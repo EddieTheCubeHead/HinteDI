@@ -40,23 +40,19 @@ class InjectionException(Exception):
 
 class ImplementationFactory:
     """A class returned when resolving an abstract base class with no default implementations. Contains the
-    ''ImplementationFactory.from_key'' -method for resolving a concrete implementation from a given key."""
+    ''ImplementationFactory.resolve_from_key'' -method for resolving a concrete implementation from a given key."""
 
     def __init__(self, resolver: Callable[[str], Any], base: type):
         self._resolver = resolver
         self._base = base
 
-    def from_key(self, key: str) -> Any:
+    def resolve_from_key(self, key: str) -> Any:
         """A method for resolving a concrete implementation for the abstract base class an implementation factory
         represents.
 
         :param key: The key used for resolving the implementation
         :type key: str"""
-        resolved = self._resolver(key)
-        if type(resolved) == ImplementationFactory:
-            raise InjectionException(f"Could not resolve key '2' or find a default implementation for "
-                                     f"class {self._base}")
-        return resolved
+        return self._resolver(key)
 
 
 class DefaultImplementationSentinel:
@@ -172,7 +168,7 @@ class HinteDI:
                 ...
 
         The abstract class injection pattern in HinteDI will return a ``HinteDI.ImplementationFactory`` instance that
-        has the ``HinteDI.ImplementationFactory.from_key`` method that can be used to resolve the concrete instance
+        has the ``HinteDI.ImplementationFactory.resolve_from_key`` method that can be used to resolve the concrete instance
         based on a given key. You can also specify a default implementation with the optional ''is_default'' argument for
         the implementation decorators. If a default implementation is present, HinteDI will inject the default
         implementation when asked to inject the abstract base class and add the ''FromKey'' method to the returned
@@ -217,7 +213,7 @@ class HinteDI:
                 ...
 
         The abstract class injection pattern in HinteDI will return a ``HinteDI.ImplementationFactory`` instance that
-        has the ``HinteDI.ImplementationFactory.from_key`` method that can be used to resolve the concrete instance
+        has the ``HinteDI.ImplementationFactory.resolve_from_key`` method that can be used to resolve the concrete instance
         based on a given key. You can also specify a default implementation with the optional ''is_default'' argument for
         the implementation decorators. If a default implementation is present, HinteDI will inject the default
         implementation when asked to inject the abstract base class and add the ''FromKey'' method to the returned
@@ -253,20 +249,24 @@ class HinteDI:
     @classmethod
     def _assert_base_present(cls, base: type, implementation: type):
         if base not in cls.dependencies:
-            raise InjectionException(f"Could not register a complete implementation {implementation} for "
-                                     f"class {base} because {base} is not registered as abstract"
+            raise InjectionException(f"Could not register a complete implementation {implementation.__name__} for "
+                                     f"class {base.__name__} because {base.__name__} is not registered as abstract "
                                      f"base dependency.")
 
     @classmethod
     def _create_key(cls, base: type, key: str, dependency_class: type, is_default: bool = True):
         if is_default and type(cls.dependencies[base][cls.default_implementation]) != ImplementationFactory:
-            raise InjectionException(f"Could not create default implementation {dependency_class} for base {base}"
-                                     f" because default implementation already exists as class "
-                                     f"{cls.dependencies[base][cls.default_implementation]}.")
+            raise InjectionException(f"Could not create default implementation {dependency_class.__name__} for base "
+                                     f"{base.__name__} because default implementation already exists as class "
+                                     f"{cls.dependencies[base][cls.default_implementation].__name__}.")
         if key in cls.dependencies[base]:
-            raise InjectionException(f"Could not create implementation {dependency_class} for base {base} because "
-                                     f"implementation with the key '{key}' already exists as class "
-                                     f"{cls.dependencies[base][key]}.")
+            raise InjectionException(f"Could not create implementation {dependency_class.__name__} for base "
+                                     f"{base.__name__} because implementation with the key '{key}' already exists as "
+                                     f"class {cls.dependencies[base][key].__name__}.")
+        if is_default and hasattr(dependency_class, "resolve_from_key"):
+            raise InjectionException(f"Could not create default implementation {dependency_class.__name__} for base "
+                                     f"{base.__name__} because default implementations cannot have an attribute named "
+                                     f"'resolve_from_key'.")
         cls.dependencies[base][key] = dependency_class
         if is_default:
             cls.dependencies[base][cls.default_implementation] = dependency_class
@@ -309,14 +309,14 @@ class HinteDI:
 
         If HinteDI is asked to inject an abstract dependency it will return either an ``HinteDI.ImplementationFactory``
         if the dependency has no default implementation, or the default implementation if the dependency has one. If
-        a default implementation is returned, HinteDI will add the ''from_key'' method to the object enabling you to
+        a default implementation is returned, HinteDI will add the ''resolve_from_key'' method to the object enabling you to
         resolve it to another implementation if needed.
 
         Usage with an abstract dependency with no default implementation::
 
             @HinteDI.inject
             def perform_function(dependency: AbstractDependency):
-                concrete_dependency = dependency.from_key("key")
+                concrete_dependency = dependency.resolve_from_key("key")
                 ...
 
         Usage with an abstract dependency with a default implementation::
@@ -327,7 +327,7 @@ class HinteDI:
                 dependency.do_stuff()
 
                 # ...Or you can resolve it into a dependency of another type
-                resolved_dependency = dependency.from_key("key")
+                resolved_dependency = dependency.resolve_from_key("key")
 
         :param func: The function requiring dependency injection
         :type func: Callable
@@ -353,8 +353,8 @@ class HinteDI:
         real_key = cls._is_dependency_present(arg.annotation)
         if real_key:
             return cls._get_dependency(real_key)
-        raise (InjectionException(f"Could not inject argument {arg.name} because type '{arg.annotation}' is not "
-                                  f"registered as a dependency."))
+        raise (InjectionException(f"Could not inject argument {arg.name} because type '{arg.annotation.__name__}' is "
+                                  f"not registered as a dependency."))
 
     @classmethod
     def _is_dependency_present(cls, annotation: type | str):
@@ -372,28 +372,28 @@ class HinteDI:
         if type(cls.dependencies[annotation]) is InstanceSentinel:
             return annotation()
         if type(cls.dependencies[annotation]) is dict:
-            return cls._get_abstract_dependency(annotation)
+            return cls._get_default_abstract_dependency(annotation)
         if cls.dependencies[annotation] is None:
             cls.dependencies[annotation] = annotation()
         return cls.dependencies[annotation]
 
     @classmethod
-    def _get_abstract_dependency(cls, abstract_base: type, key: str = "default"):
+    def _get_default_abstract_dependency(cls, abstract_base: type, key: str = "default"):
         cls._assert_implemented(abstract_base)
         key = cls._assert_valid_key_or_default(abstract_base, key)
         if type(cls.dependencies[abstract_base][key]) is ImplementationFactory:
             return cls.dependencies[abstract_base][key]
         real_resolved_type = cls._is_dependency_present(cls.dependencies[abstract_base][key])
         dependency = cls._get_dependency(real_resolved_type)
-        if not hasattr(dependency, "from_key"):
-            dependency.from_key = cls._resolve_from_key(abstract_base)
+        if not hasattr(dependency, "resolve_from_key"):
+            dependency.resolve_from_key = cls._resolve_from_key(abstract_base)
         return dependency
 
     @classmethod
     def _assert_implemented(cls, abstract_base: type):
         if len(cls.dependencies[abstract_base]) == 1:
-            raise InjectionException(f"Could not inject an implementation of abstract base class {abstract_base} "
-                                     f"because no implementations exist.")
+            raise InjectionException(f"Could not inject an implementation of abstract base class "
+                                     f"{abstract_base.__name__} because no implementations exist.")
 
     @classmethod
     def _assert_valid_key_or_default(cls, abstract_base: type, key: str) -> str:
@@ -404,10 +404,8 @@ class HinteDI:
     @classmethod
     def _resolve_from_key(cls, base: type) -> Callable[[str], Any]:
         def wrapper(key: str) -> Any:
-            if key == cls.default_implementation:
-                return cls.dependencies[base][cls.default_implementation]
             if key in cls.dependencies[base]:
                 return cls._get_dependency(cls.dependencies[base][key])
-            return cls.dependencies[base][cls.default_implementation]
+            raise InjectionException(f"Could not resolve key '{key}' for class {base.__name__}.")
 
         return wrapper
