@@ -274,6 +274,25 @@ object enabling you to resolve the dependency to some other implementation if ne
 </section>
 <section id="the-instance-factory-class">
 <h2>The instance factory class<a class="headerlink" href="#the-instance-factory-class" title="Permalink to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="hintedi.hinted_dependency_injector.ImplementationFactory">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">hintedi.hinted_dependency_injector.</span></span><span class="sig-name descname"><span class="pre">ImplementationFactory</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">resolver</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">type</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hintedi.hinted_dependency_injector.ImplementationFactory" title="Permalink to this definition">¶</a></dt>
+<dd><p>A class returned when resolving an abstract base class with no default implementations. Contains the
+‘’ImplementationFactory.resolve_from_key’’ -method for resolving a concrete implementation from a given key.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="hintedi.hinted_dependency_injector.ImplementationFactory.resolve_from_key">
+<span class="sig-name descname"><span class="pre">resolve_from_key</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Any</span></span></span><a class="headerlink" href="#hintedi.hinted_dependency_injector.ImplementationFactory.resolve_from_key" title="Permalink to this definition">¶</a></dt>
+<dd><p>A method for resolving a concrete implementation for the abstract base class an implementation factory
+represents.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>key</strong> (<em>str</em>) – The key used for resolving the implementation</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 </section>
 <section id="exception-thrown-by-the-package">
 <h2>Exception thrown by the package<a class="headerlink" href="#exception-thrown-by-the-package" title="Permalink to this heading">¶</a></h2>
