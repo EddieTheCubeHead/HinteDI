@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>==61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "HinteDI"
+version = "0.3.1"
+authors = [
+  { name="Eetu Asikainen", email="eetu.asikainen1204@gmail.com" },
+]
+description = "A simple dependency injector based on type hints"
+readme = "README.md"
+requires-python = ">=3.10"
+keywords = [
+    "dependency injection",
+    "DI",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/EddieTheCubeHead/HinteDI"
+"Bug Tracker" = "https://github.com/EddieTheCubeHead/HinteDI/issues"

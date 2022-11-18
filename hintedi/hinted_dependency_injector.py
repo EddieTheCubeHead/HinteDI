@@ -1,4 +1,4 @@
-__version__ = "0.3.0"
+__version__ = "0.3.1"
 __author__ = "Eetu Asikainen"
 
 from inspect import signature, Parameter

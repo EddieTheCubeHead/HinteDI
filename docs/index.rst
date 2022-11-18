@@ -13,7 +13,7 @@ The HinteDI class
 The instance factory class
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. autoclass:: hintedi.hinted_dependency_injector.InstanceFactory
+.. autoclass:: hintedi.hinted_dependency_injector.ImplementationFactory
       :members:
 
 Exception thrown by the package
