@@ -2,7 +2,7 @@ __version__ = "0.3.1"
 __author__ = "Eetu Asikainen"
 
 from inspect import signature, Parameter
-from typing import Any, Callable, Union, Dict
+from typing import Any, Callable, Union, Dict, Hashable
 
 
 def _is_injectable_argument(arg):
@@ -42,16 +42,16 @@ class ImplementationFactory:
     """A class returned when resolving an abstract base class with no default implementations. Contains the
     ''ImplementationFactory.resolve_from_key'' -method for resolving a concrete implementation from a given key."""
 
-    def __init__(self, resolver: Callable[[str], Any], base: type):
+    def __init__(self, resolver: Callable[[Hashable], Any], base: type):
         self._resolver = resolver
         self._base = base
 
-    def resolve_from_key(self, key: str) -> Any:
+    def resolve_from_key(self, key: Hashable) -> Any:
         """A method for resolving a concrete implementation for the abstract base class an implementation factory
         represents.
 
         :param key: The key used for resolving the implementation
-        :type key: str"""
+        :type key: typing.Hashable"""
         return self._resolver(key)
 
 
@@ -148,7 +148,7 @@ class HinteDI:
         return dependency_class
 
     @classmethod
-    def singleton_implementation(cls, *, base: type, key: str, is_default: bool = False) -> Callable[[type], type]:
+    def singleton_implementation(cls, *, base: type, key: Hashable, is_default: bool = False) -> Callable[[type], type]:
         """A class method meant to be used as a class decorator to mark the class as a concrete singleton-based
         implementation of an abstract dependency.
 
@@ -163,6 +163,7 @@ class HinteDI:
                 ...
 
             # Note that actually inheriting the abstract base is not required for HinteDI to work
+            # The key can be any hashable value, but most use cases should probably use enums or strings
             @HinteDI.singleton_implementation(base = AbstractDependency, key = "concrete")
             class ConcreteDependency(AbstractDependency):
                 ...
@@ -184,7 +185,7 @@ class HinteDI:
         :param base: The abstract base class the created concrete class will implement
         :type base: type
         :param key: The key that can be used to resolve the abstract base class into the created implementation
-        :type key: str
+        :type key: typing.Hashable
         :param is_default: An optional flag that marks the implementation as the default implementation, default=False
         :type is_default: bool
         """
@@ -208,6 +209,7 @@ class HinteDI:
                 ...
 
             # Note that actually inheriting the abstract base is not required for HinteDI to work
+            # The key can be any hashable value, but most use cases should probably use enums or strings
             @HinteDI.instance_implementation(base = AbstractDependency, key = "concrete")
             class ConcreteDependency(AbstractDependency):
                 ...
@@ -229,7 +231,7 @@ class HinteDI:
         :param base: The abstract base class the created concrete class will implement
         :type base: type
         :param key: The key that can be used to resolve the abstract base class into the created implementation
-        :type key: str
+        :type key: typing.Hashable
         :param is_default: An optional flag that marks the implementation as the default implementation, default=False
         :type is_default: bool
         """
@@ -239,7 +241,7 @@ class HinteDI:
         return wrapper
 
     @classmethod
-    def _create_implementation(cls, base: type, key: str, is_default: bool, dependency_class: type,
+    def _create_implementation(cls, base: type, key: Hashable, is_default: bool, dependency_class: type,
                                default_value: None | InstanceSentinel) -> type:
         cls._assert_base_present(base, dependency_class)
         cls._create_key(base, key, dependency_class, is_default)
@@ -254,7 +256,7 @@ class HinteDI:
                                      f"base dependency.")
 
     @classmethod
-    def _create_key(cls, base: type, key: str, dependency_class: type, is_default: bool = True):
+    def _create_key(cls, base: type, key: Hashable, dependency_class: type, is_default: bool = True):
         if is_default and type(cls.dependencies[base][cls.default_implementation]) != ImplementationFactory:
             raise InjectionException(f"Could not create default implementation {dependency_class.__name__} for base "
                                      f"{base.__name__} because default implementation already exists as class "
@@ -309,8 +311,8 @@ class HinteDI:
 
         If HinteDI is asked to inject an abstract dependency it will return either an ``HinteDI.ImplementationFactory``
         if the dependency has no default implementation, or the default implementation if the dependency has one. If
-        a default implementation is returned, HinteDI will add the ''resolve_from_key'' method to the object enabling you to
-        resolve it to another implementation if needed.
+        a default implementation is returned, HinteDI will add the ''resolve_from_key'' method to the object enabling
+        you to resolve it to another implementation if needed.
 
         Usage with an abstract dependency with no default implementation::
 
