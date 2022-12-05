@@ -122,8 +122,8 @@ Arguments already provided including default values will be ignored, as will all
 </div>
 <p>If HinteDI is asked to inject an abstract dependency it will return either an <code class="docutils literal notranslate"><span class="pre">HinteDI.ImplementationFactory</span></code>
 if the dependency has no default implementation, or the default implementation if the dependency has one. If
-a default implementation is returned, HinteDI will add the ‘’resolve_from_key’’ method to the object enabling you to
-resolve it to another implementation if needed.</p>
+a default implementation is returned, HinteDI will add the ‘’resolve_from_key’’ method to the object enabling
+you to resolve it to another implementation if needed.</p>
 <p>Usage with an abstract dependency with no default implementation:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@HinteDI</span><span class="o">.</span><span class="n">inject</span>
 <span class="k">def</span> <span class="nf">perform_function</span><span class="p">(</span><span class="n">dependency</span><span class="p">:</span> <span class="n">AbstractDependency</span><span class="p">):</span>
@@ -179,6 +179,7 @@ implementation of an abstract dependency.</p>
     <span class="o">...</span>
 
 <span class="c1"># Note that actually inheriting the abstract base is not required for HinteDI to work</span>
+<span class="c1"># The key can be any hashable value, but most use cases should probably use enums or strings</span>
 <span class="nd">@HinteDI</span><span class="o">.</span><span class="n">instance_implementation</span><span class="p">(</span><span class="n">base</span> <span class="o">=</span> <span class="n">AbstractDependency</span><span class="p">,</span> <span class="n">key</span> <span class="o">=</span> <span class="s2">&quot;concrete&quot;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">ConcreteDependency</span><span class="p">(</span><span class="n">AbstractDependency</span><span class="p">):</span>
     <span class="o">...</span>
@@ -201,7 +202,7 @@ object enabling you to resolve the dependency to some other implementation if ne
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>base</strong> (<em>type</em>) – The abstract base class the created concrete class will implement</p></li>
-<li><p><strong>key</strong> (<em>str</em>) – The key that can be used to resolve the abstract base class into the created implementation</p></li>
+<li><p><strong>key</strong> (<em>Hashable</em>) – The key that can be used to resolve the abstract base class into the created implementation</p></li>
 <li><p><strong>is_default</strong> (<em>bool</em>) – An optional flag that marks the implementation as the default implementation, default=False</p></li>
 </ul>
 </dd>
@@ -228,7 +229,7 @@ same instance for all injections).</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="hintedi.hinted_dependency_injector.HinteDI.singleton_implementation">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">singleton_implementation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_default</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">type</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">type</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#hintedi.hinted_dependency_injector.HinteDI.singleton_implementation" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">singleton_implementation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Hashable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_default</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">type</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">type</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#hintedi.hinted_dependency_injector.HinteDI.singleton_implementation" title="Permalink to this definition">¶</a></dt>
 <dd><p>A class method meant to be used as a class decorator to mark the class as a concrete singleton-based
 implementation of an abstract dependency.</p>
 <p>See <code class="docutils literal notranslate"><span class="pre">HinteDI.abstract_base</span></code> for registering the abstract base class and <code class="docutils literal notranslate"><span class="pre">HinteDI.singleton</span></code> for a more
@@ -240,6 +241,7 @@ thorough explanation of the singleton patter in HinteDI</p>
     <span class="o">...</span>
 
 <span class="c1"># Note that actually inheriting the abstract base is not required for HinteDI to work</span>
+<span class="c1"># The key can be any hashable value, but most use cases should probably use enums or strings</span>
 <span class="nd">@HinteDI</span><span class="o">.</span><span class="n">singleton_implementation</span><span class="p">(</span><span class="n">base</span> <span class="o">=</span> <span class="n">AbstractDependency</span><span class="p">,</span> <span class="n">key</span> <span class="o">=</span> <span class="s2">&quot;concrete&quot;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">ConcreteDependency</span><span class="p">(</span><span class="n">AbstractDependency</span><span class="p">):</span>
     <span class="o">...</span>
@@ -262,7 +264,7 @@ object enabling you to resolve the dependency to some other implementation if ne
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>base</strong> (<em>type</em>) – The abstract base class the created concrete class will implement</p></li>
-<li><p><strong>key</strong> (<em>str</em>) – The key that can be used to resolve the abstract base class into the created implementation</p></li>
+<li><p><strong>key</strong> (<em>Hashable</em>) – The key that can be used to resolve the abstract base class into the created implementation</p></li>
 <li><p><strong>is_default</strong> (<em>bool</em>) – An optional flag that marks the implementation as the default implementation, default=False</p></li>
 </ul>
 </dd>
@@ -276,17 +278,17 @@ object enabling you to resolve the dependency to some other implementation if ne
 <h2>The instance factory class<a class="headerlink" href="#the-instance-factory-class" title="Permalink to this heading">¶</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="hintedi.hinted_dependency_injector.ImplementationFactory">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">hintedi.hinted_dependency_injector.</span></span><span class="sig-name descname"><span class="pre">ImplementationFactory</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">resolver</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">type</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hintedi.hinted_dependency_injector.ImplementationFactory" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">hintedi.hinted_dependency_injector.</span></span><span class="sig-name descname"><span class="pre">ImplementationFactory</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">resolver</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">Hashable</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">type</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#hintedi.hinted_dependency_injector.ImplementationFactory" title="Permalink to this definition">¶</a></dt>
 <dd><p>A class returned when resolving an abstract base class with no default implementations. Contains the
 ‘’ImplementationFactory.resolve_from_key’’ -method for resolving a concrete implementation from a given key.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="hintedi.hinted_dependency_injector.ImplementationFactory.resolve_from_key">
-<span class="sig-name descname"><span class="pre">resolve_from_key</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Any</span></span></span><a class="headerlink" href="#hintedi.hinted_dependency_injector.ImplementationFactory.resolve_from_key" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">resolve_from_key</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Hashable</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Any</span></span></span><a class="headerlink" href="#hintedi.hinted_dependency_injector.ImplementationFactory.resolve_from_key" title="Permalink to this definition">¶</a></dt>
 <dd><p>A method for resolving a concrete implementation for the abstract base class an implementation factory
 represents.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>key</strong> (<em>str</em>) – The key used for resolving the implementation</p>
+<dd class="field-odd"><p><strong>key</strong> (<em>Hashable</em>) – The key used for resolving the implementation</p>
 </dd>
 </dl>
 </dd></dl>
